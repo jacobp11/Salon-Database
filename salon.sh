@@ -6,31 +6,9 @@ PSQL="psql -X --username=freecodecamp --dbname=salon --tuples-only -c"
 echo -e "\n~~~~~ Salon Shop ~~~~~\n"
 
 MAIN_MENU() {
-  if [[ $1 ]]
-  then
-    echo -e "\n$1"
-  fi
-
-  echo -e "Would you like to schedule or cancel an appointment?\n"
-  echo -e "1) Schedule an appointment\n2) Cancel an appointment\n3) Exit"
-  read MAIN_MENU_SELECTION
-
-  case $MAIN_MENU_SELECTION in
-    1) APPOINTMENT_CREATION_MENU ;;
-    2) APPOINTMENT_CANCELLATION_MENU ;;
-    3) EXIT ;;
-    *) MAIN_MENU "Please enter a valid option." ;;
-  esac
-}
-
-APPOINTMENT_CREATION_MENU() {
-  # get available services
-  AVAILABLE_SERVICES=$($PSQL "SELECT service_id, name FROM services")
-  echo -e "\nHere is a list of available services:\n"
-  echo $AVAILABLE_SERVICES | while read SERVICE_ID BAR NAME
-  do
-    echo "$SERVICE_ID $NAME"
-  done
+  
+  # print list of services
+  echo -e "1) Hair Styling\n2) Nail Services\n3) Pedicure"
 
   # appointment selection
   echo -e "\nSelect a service to schedule.\n"
@@ -39,18 +17,43 @@ APPOINTMENT_CREATION_MENU() {
   # if not a number
   if [[ ! $SERVICE_ID_SELECTED =~ ^[1-3]+$ ]]
   then
-    APPOINTMENT_CREATION_MENU "That is not a valid number."
+    MAIN_MENU "That is not a valid number."
   else
-    echo success
+    SERVICE_NAME=$($PSQL "SELECT name FROM services WHERE service_id = '$SERVICE_ID_SELECTED'")
+    echo -e "\nYou have selected a$SERVICE_NAME appointment.\nPlease enter your phone number:\n"
+    read CUSTOMER_PHONE
+
+    PHONE_NUMBER=$($PSQL "SELECT phone FROM customers where phone = '$CUSTOMER_PHONE'")
+
+    # if phone number not found
+    if [[ -z $PHONE_NUMBER ]]
+    then
+      echo -e "That phone number was not found, please enter your name.\n\n"
+      read CUSTOMER_NAME
+
+      # insert name and phone number into the customers table
+      INSERT_NEW_CUSTOMER=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME')")
+      echo -e "\nYour info has been stored. You will be returned to the menu, please enter the same info again."
+
+      # get customer_name
+      NAME=$($PSQL "SELECT name FROM customers WHERE name = '$CUSTOMER_NAME'")
+      echo $NAME
+
+      APPOINTMENT_CREATION_MENU
+    else
+      echo -e "\nPlease select a time for your appointment."
+      read SERVICE_TIME
+
+      # get customer_id
+      CUSTOMER_ID=$($PSQL "SELECT customer_id FROM customers WHERE phone = '$CUSTOMER_PHONE'")
+
+      # insert appointment information
+      INSERT_APPOINTMENT=$($PSQL "INSERT INTO appointments(customer_id, service_id, time) VALUES('$CUSTOMER_ID', '$SERVICE_ID_SELECTED', '$SERVICE_TIME')")
+      
+      # end message
+      echo -e "I have put you down for a$SERVICE_NAME at $SERVICE_TIME,$NAME."
+    fi
   fi
-}
-
-APPOINTMENT_CANCELLATION_MENU() {
-  echo ...
-}
-
-EXIT() {
-  echo -e "\nThank you and goodbye."
 }
 
 MAIN_MENU
