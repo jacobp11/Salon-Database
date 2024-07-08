@@ -39,7 +39,7 @@ MAIN_MENU() {
       NAME=$($PSQL "SELECT name FROM customers WHERE name = '$CUSTOMER_NAME'")
       echo $NAME
 
-      APPOINTMENT_CREATION_MENU
+      MAIN_MENU
     else
       echo -e "\nPlease select a time for your appointment."
       read SERVICE_TIME
