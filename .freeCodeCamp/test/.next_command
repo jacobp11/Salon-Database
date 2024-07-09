@@ -564,3 +564,6 @@ psql --username=freecodecamp --dbname=postgres
 echo -e "I have put you down for a Pedicure at 9, Fabio."
 ./salon.sh
 ./salon.sh
+./salon.sh
+exit
+pg_dump -cC --inserts -U freecodecamp salon > salon.sql
