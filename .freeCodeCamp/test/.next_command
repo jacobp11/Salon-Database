@@ -552,3 +552,15 @@ __vsc_original_prompt_command=${PROMPT_COMMAND:-}
 psql --username=freecodecamp --dbname=postgres
 ./salon.sh
 ./salon.sh 1
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+./salon.sh
+echo -e "I have put you down for a Pedicure at 9, Fabio."
+./salon.sh
+./salon.sh
