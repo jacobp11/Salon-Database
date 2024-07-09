@@ -29,6 +29,26 @@ MAIN_MENU() {
     3) echo -e "You have selected Pedicure.\n" ;;
     *) MAIN_MENU "Please select a valid option.\n" ;;
   esac
+
+  # request phone number
+  echo -e "Please enter your phone number."
+  read CUSTOMER_PHONE
+
+  # check for phone number
+  PHONE_NUMBER=$($PSQL "SELECT phone FROM customers WHERE phone = '$CUSTOMER_PHONE'")
+  echo $PHONE_NUMBER
+
+  # if phone number does not exist
+  if [[ -z $PHONE_NUMBER ]]
+  then
+    # request name
+    echo -e "Please enter your name.\n"
+    read CUSTOMER_NAME
+
+    # insert customer name and phone number
+    CUSTOMER_INSERT=$($PSQL "INSERT INTO customers(phone, name) VALUES('$CUSTOMER_PHONE', '$CUSTOMER_NAME')")
+  fi
+
 }
 
 MAIN_MENU

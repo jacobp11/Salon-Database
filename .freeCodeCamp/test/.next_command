@@ -547,3 +547,8 @@ trap '__vsc_preexec_all "$_"' DEBUG
 __vsc_original_prompt_command=${PROMPT_COMMAND:-}
 ./salon.sh
 ./salon.sh
+./salon.sh
+./salon.sh
+psql --username=freecodecamp --dbname=postgres
+./salon.sh
+./salon.sh 1
