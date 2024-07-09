@@ -19,10 +19,14 @@ MAIN_MENU() {
   echo -e "\nSelect a service to schedule.\n"
   read SERVICE_ID_SELECTED
 
+  # save service_id for later
+  SERVICE_ID=$($PSQL "SELECT service_id FROM services WHERE service_id = '$SERVICE_ID_SELECTED'")
+
+  # print selection to screen
   case $SERVICE_ID_SELECTED in
-    1) echo "You have selected Hair Styling.\n" ;;
-    2) echo "You have selected Nail Services.\n" ;;
-    3) echo "You have selected Pedicure.\n" ;;
+    1) echo -e "You have selected Hair Styling.\n" ;;
+    2) echo -e "You have selected Nail Services.\n" ;;
+    3) echo -e "You have selected Pedicure.\n" ;;
     *) MAIN_MENU "Please select a valid option.\n" ;;
   esac
 }
